@@ -20,7 +20,7 @@
 #define NUM_REGS 32
 
 // extraire proprement des morceaux de chaine de caractere (Python - str[a:b])
-char * extr_string (char * str, int a, int b) {
+char * extstr (char * str, int a, int b) {
 	
 	if (a > b || a < 0 || b >= sizeof(str) / sizeof(char)) {
 		printf("Erreur de bornes.\n");
@@ -38,8 +38,21 @@ char * extr_string (char * str, int a, int b) {
 	return rslt;
 }
 
+// convertit un nombre binaire ('1001001110') en décimal
+int bin2dec(char * bin) {
+	return 0;
+}
+
 void inter (char * inst, char * fct, int * r1, int * r2, long * o) {
 	// test de coherence
+	if ((sizeof(inst) / sizeof(char) != 32 && strcmp(extstr(inst, 0, 5), "01111") != 1) || (sizeof(inst) / sizeof(char) != 27 && strcmp(extstr(inst, 0, 5), "01111") == 1) {
+		System.out.println("Instruction corrompue.");
+		exit(0);
+	}
+	
+	*fct = extstr(inst, 0, 5);
+	
+	 
 }
 	
 
@@ -49,11 +62,6 @@ int main (int argc, char * argv[]) {
 	FILE * code = NULL;
 
 	code = fopen("bin.txt", "r");
-	
-	char * str1 = "0123456789";
-	char * str2 = extr_string(str1, 2, 7);
-	
-	printf("%s\n", str2);
 	
 	return 0;
 }
