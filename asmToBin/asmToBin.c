@@ -1,52 +1,61 @@
 #include<stdio.h>
+#include <unistd.h>
 #include "asmToBin.h"
 
 
 int main (int argc, const char* argv[] ){
 
-
+	char* name_file_in = "ex_code";
+	char* name_file_out = "bin.txt";
+	char* string = malloc(10000);
+	fill_string(name_file_in, string);
+	//write_file(name_file_out, string);
 		
 	}
 
-void read_file(){
-			FILE *ptr_file;
-    		char buf[1000];
+int fill_string(char* name_file, char* string){
+	FILE * fp;
+    char * line_asm = NULL;
+    char * line_bin = NULL;
+    size_t len = 0;
+    ssize_t read;
 
-    		ptr_file =fopen("input.txt","r");
-    		if (!ptr_file)
-        		return 1;
+    fp = fopen(name_file, "r");
+    if (fp == NULL)
+        return 1;
 
-    		while (fgets(buf,1000, ptr_file)!=NULL)
-        		printf("%s",buf);
+    while ((read = getline(&line_asm, &len, fp)) != -1) {
+    	//conversion asm to bin
+    	convert(line_asm, line_bin);
+        // ajout de la ligne au string
+        
+        strcat(string, line_bin);        
+    }
 
-		fclose(ptr_file);
-    		return 0;
-    		}
-    		
-void write_file(){
-		FILE *ptr_file;
-		int x;
+    fclose(fp);
+    if (line_asm)
+        free(line_asm);
+    if (line_bin)
+        free(line_bin);    
+    exit(0);
+   }
+    		    		
+int convert(char* line_asm, char* line_bin){
+	line_bin = strdup(line_asm);
 
-		ptr_file =fopen("asm_program.txt", "r");
+}    		    		
+int write_file (char *filepath, char *data) {
+    int rc = 0;
 
-		if (!ptr_file)
-			return 1;
+    FILE *fOut = fopen (filepath, "w");
+    if (fOut != NULL) {
+        if (fputs (data, fOut) != EOF) {
+            rc = 0;
+        }
+        fclose (fOut); // or for the paranoid: if (fclose (fOut) == EOF) rc = 0;
+    }
 
-		for (x=1; x<=10; x++)
-			fprintf(ptr_file,"%d\n", x);
-
-		fclose(ptr_file);
-
-		return  0;
-
-}    		
-
-// Permet d'effacer les \n d'un chaîne de caractères
-void clean(char *str, int length){
-	int i;
-	for(i =0; i<length; i++){
-		if(str[i]=='\n'){
-			str[i]='\0';
-		}
-	}
+    return rc;
 }
+
+
