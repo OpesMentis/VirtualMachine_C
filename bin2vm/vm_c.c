@@ -58,17 +58,18 @@ int bin2dec(char * bin) {
 }
 
 // interprète une ligne d'instruction en binaire
-void inter (char * inst, char * fct, int * r1, int * r2, long * o) {
+void inter (char * inst, char * fct, int * r1, int * r2, char flag, long * o) {
 	// test de coherence
 	if (strlen(inst) != 32) {
 		printf("Instruction corrompue.");
 		exit(0);
 	}
 
-	fct = extstr(fct, 0, 5);
-
-
-
+	fct = extstr(inst, 0, 5);
+	*r1 = bin2dec(extstr(inst, 5, 10));
+	*flag = extstr(inst, 10, 11);
+	*o = bin2dec(extstr(inst, 11, 27));
+	*r2 = bin2dec(extstr(inst, 27, 32));
 }
 
 
@@ -79,10 +80,12 @@ int main (int argc, char * argv[]) {
 
 	code = fopen("./../data/bin.txt", "r");
 
+	/*
 	char * test = "101111";
 
 	printf("%s -> %i\n", test, bin2dec(test));
 	printf("Ca va ?\n");
+	*/
 
 	return 0;
 }
