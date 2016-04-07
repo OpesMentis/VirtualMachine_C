@@ -47,8 +47,10 @@ int bin2dec(char * bin) {
 	int tot = 0;
 	int i;
 
-	for (i = strlen(bin)-1; i > 0; i--) {
-		tot += val * bin[i];
+	for (i = strlen(bin)-1; i >= 0; i--) {
+		if (bin[i] == '1') {
+			tot += val;
+		}
 		val *= 2;
 	}
 
@@ -61,11 +63,10 @@ void inter (char * inst, char * fct, int * r1, int * r2, long * o) {
 	if (strlen(inst) != 32) {
 		printf("Instruction corrompue.");
 		exit(0);
-	} else {
-		printf("Instruction correcte.");
 	}
 
-	// *fct = extstr(inst, 0, 5);
+	fct = extstr(fct, 0, 5);
+
 
 
 }
@@ -78,9 +79,10 @@ int main (int argc, char * argv[]) {
 
 	code = fopen("./../data/bin.txt", "r");
 
-	char * test = "101110";
+	char * test = "101111";
 
 	printf("%s -> %i\n", test, bin2dec(test));
+	printf("Ca va ?\n");
 
 	return 0;
 }
