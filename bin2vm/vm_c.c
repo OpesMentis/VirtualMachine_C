@@ -58,7 +58,7 @@ int bin2dec(char * bin) {
 }
 
 // interprète une ligne d'instruction en binaire
-void inter (char * inst, char * fct, int * r1, int * r2, char flag, long * o) {
+void inter (char * inst, char * fct, int * r1, int * r2, int * flag, long * o) {
 	// test de coherence
 	if (strlen(inst) != 32) {
 		printf("Instruction corrompue.");
@@ -67,7 +67,7 @@ void inter (char * inst, char * fct, int * r1, int * r2, char flag, long * o) {
 
 	fct = extstr(inst, 0, 5);
 	*r1 = bin2dec(extstr(inst, 5, 10));
-	*flag = extstr(inst, 10, 11);
+	*flag = bin2dec(extstr(inst, 10, 11));
 	*o = bin2dec(extstr(inst, 11, 27));
 	*r2 = bin2dec(extstr(inst, 27, 32));
 }
@@ -79,6 +79,8 @@ int main (int argc, char * argv[]) {
 	FILE * code = NULL;
 
 	code = fopen("./../data/bin.txt", "r");
+
+	printf("stop !\n");
 
 	/*
 	char * test = "101111";
