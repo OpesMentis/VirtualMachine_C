@@ -76,18 +76,17 @@ void inter (char * inst, char * fct, int * r1, int * r2, int * flag, long * o) {
 int main (int argc, char * argv[]) {
 
 	int regs[NUM_REGS];
+	char * inst = malloc(32 * sizeof(char));
 	FILE * code = NULL;
 
 	code = fopen("./../data/bin.txt", "r");
 
-	printf("stop !\n");
+	fscanf(code, "%s", inst);
+	printf("%s\n", inst);
 
-	/*
-	char * test = "101111";
+	// printf(stderr, "Affichage réussie de l'erreur !\n");
 
-	printf("%s -> %i\n", test, bin2dec(test));
-	printf("Ca va ?\n");
-	*/
+	fclose(code);
 
 	return 0;
 }
