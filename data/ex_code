@@ -1,5 +1,5 @@
 scall 0
-jmp imm 16, 31
+jmp imm 4, 31
 scall 1
 stop
 
@@ -8,7 +8,7 @@ sub 30, imm 8, 30
 store 30, imm 0, 31
 store 30, imm 4, 1
 sub 1, imm 1, 1
-jmp imm 16, 31
+jmp imm 4, 31
 load 30, imm 1, 2
 mult 1, 2, 1
 load 30, imm 0, 31
