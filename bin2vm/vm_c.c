@@ -19,13 +19,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "vm_c.h"
 
 #define NUM_REGS 32
 
 // extraire proprement des morceaux de chaine de caractere (Python - str[a:b])
 char * extstr (char * str, int a, int b) {
-
-	if (a > b || a < 0 || b >= sizeof(str) / sizeof(char)) {
+	if (a > b || a < 0 || b >= strlen(str)+1) {
 		printf("Erreur de bornes.\n");
 		exit(0);
 	}
@@ -58,18 +58,12 @@ int bin2dec(char * bin) {
 }
 
 // interprète une ligne d'instruction en binaire
-void inter (char * inst, char * fct, int * r1, int * r2, int * flag, long * o) {
-	// test de coherence
-	if (strlen(inst) != 32) {
-		printf("Instruction corrompue.");
-		exit(0);
-	}
-
-	fct = extstr(inst, 0, 5);
-	*r1 = bin2dec(extstr(inst, 5, 10));
-	*flag = bin2dec(extstr(inst, 10, 11));
-	*o = bin2dec(extstr(inst, 11, 27));
-	*r2 = bin2dec(extstr(inst, 27, 32));
+void inter (char * inst, struct cmd * comm) {
+	strcpy(comm->fct, extstr(inst, 0, 5));
+	comm->r1 = bin2dec(extstr(inst, 5, 10));
+	comm->flag = bin2dec(extstr(inst, 10, 11));
+	comm->o = bin2dec(extstr(inst, 11, 27));
+	comm->r2 = bin2dec(extstr(inst, 27, 32));
 }
 
 
@@ -77,16 +71,20 @@ int main (int argc, char * argv[]) {
 
 	int regs[NUM_REGS];
 	char * inst = malloc(32 * sizeof(char));
+	struct cmd * comm = malloc(sizeof(struct cmd));
 	FILE * code = NULL;
 
 	code = fopen("./../data/bin.txt", "r");
-
-	fscanf(code, "%s", inst);
-	printf("%s\n", inst);
-
-	// printf(stderr, "Affichage réussie de l'erreur !\n");
+	fscanf(code, "%32s", inst);
+	inter(inst, comm);
 
 	fclose(code);
+
+	printf("%s\n", comm->fct);
+	printf("%d\n", comm->r1);
+	printf("%d\n", comm->flag);
+	printf("%ld\n", comm->o);
+	printf("%d\n", comm->r2);
 
 	return 0;
 }
