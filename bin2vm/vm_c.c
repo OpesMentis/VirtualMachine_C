@@ -2,13 +2,13 @@
 	Programme n°2, interpretation des instructions en binaire dans le fichier 'bin.txt'.
 	Encodage : 5 bits  - fonction
 			   5 bits  - parametre registre 1
-			   1 bit   - flag o (1 : reg ; 0 : imm)
+			   1 bit   - flag (1 : reg ; 0 : imm)
 			   16 bits - parametre o
 			   5 bits  - parametre registre 2
 
 	jmp		 : 5 bits  - fonction (01111)
 			   5 bits  - '00000'
-			   1 bits  - flag o
+			   1 bits  - flag
 			   16 bits - parametre o
 			   5 bits  - parametre registre
 
@@ -42,7 +42,7 @@ char * extstr (char * str, int a, int b) {
 }
 
 // convertit un nombre binaire ('1001001110') en décimal
-int bin2dec(char * bin) {
+int bin2dec (char * bin) {
 	int val = 1;
 	int tot = 0;
 	int i;
@@ -66,6 +66,44 @@ void inter (char * inst, struct cmd * comm) {
 	comm->r2 = bin2dec(extstr(inst, 27, 32));
 }
 
+void trait (struct cmd comm, int * regs) {
+	long o;
+	if (comm->flag == 0) {
+		o = comm->o;
+	} else {
+		o = regs[comm->o];
+	}
+
+	switch (comm->fct) {
+		case "00000": // add
+			regs[comm->r2] = regs[comm->r1] + o;
+			break;
+		case "00001": // sub
+			regs[comm->r2] = regs[comm->r1] - o;
+			break;
+		case "00010": // mult
+			regs[comm->r2] = regs[comm->r1] * o;
+			break;
+		case "00011": // div
+			regs[comm->r2] = regs[comm->r1] / o;
+			break;
+		case "00100": // and
+			regs[comm->r2] = regs[comm->r1] & o;
+			break;
+		case "00101": // or
+			regs[comm->r2] = regs[comm->r1] | o;
+			break;
+		case "00110": // xor
+			regs[comm->r2] = regs[comm->r1] ^ o;
+			break;
+		case "00111": // shl
+			regs[comm->r2] = regs[comm->r1] << o;
+			break;
+		case "01000": // shr
+			regs[comm->r2] = regs[comm->r1] >> o;
+			break;
+	}
+}
 
 int main (int argc, char * argv[]) {
 
@@ -75,6 +113,8 @@ int main (int argc, char * argv[]) {
 	FILE * code = NULL;
 
 	code = fopen("./../data/bin.txt", "r");
+	fscanf(code, "%32s", inst);
+	inter(inst, comm);
 	fscanf(code, "%32s", inst);
 	inter(inst, comm);
 
