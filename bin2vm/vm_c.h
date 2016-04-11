@@ -10,7 +10,8 @@ struct cmd {
 };
 
 char * extstr (char * str, int a, int b);
-int bin2dec(char * bin);
+int bin2dec (char * bin);
 void inter (char * inst, struct cmd * comm);
+void trait (struct cmd comm, int * regs);
 
 #endif
