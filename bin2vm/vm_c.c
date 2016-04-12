@@ -35,16 +35,11 @@ char * extstr (char * str, int a, int b) {
 		printf("Erreur de bornes.\n");
 		exit(0);
 	}
-
-	char * rslt;
-	rslt = malloc(sizeof(char) * (b-a+1));
-	int i;
-
-	for (i = a; i < b; i++) {
-		rslt[i-a] = str[i];
-	}
-
-	return rslt;
+	
+	char * rslt = malloc(sizeof(char) * (b-a+1));
+	strcpy(rslt, str);
+	rslt[b] = '\0';
+	return rslt+a;
 }
 
 // convertit un nombre binaire ('1001001110') en décimal
@@ -70,6 +65,15 @@ void inter (char * inst, struct cmd * comm) {
 	comm->flag = bin2dec(extstr(inst, 10, 11));
 	comm->o = bin2dec(extstr(inst, 11, 27));
 	comm->r2 = bin2dec(extstr(inst, 27, 32));
+}
+
+// affiche le contenu d'une structure cmd
+void print_cmd(struct cmd comm) {
+	printf("%s\n", comm.fct);
+	printf("%i\n", comm.r1);
+	printf("%i\n", comm.flag);
+	printf("%ld\n", comm.o);
+	printf("%i\n\n", comm.r2);
 }
 
 // exécute une commande, pointeurs vers registre et pc donnés
@@ -152,10 +156,10 @@ void trait (struct cmd comm, int * regs, int * pc) {
 			(*pc)++;
 			break;
 		case 18: // stop
-			printf("FIN DE L'EXÉCUTION");
+			printf("FIN DE L'EXÉCUTION\n");
 			break;
 		default:
-			printf("ERREUR À L'INSTRUCTION %i", *pc);
+			printf("ERREUR À L'INSTRUCTION %i\n.", *pc);
 			break;
 	}
 }
@@ -170,18 +174,31 @@ int main (int argc, char * argv[]) {
 	FILE * code = NULL;
 
 	code = fopen("./../data/bin.txt", "r");
-	fscanf(code, "%32s", inst);
-	inter(inst, comm);
-	fscanf(code, "%32s", inst);
-	inter(inst, comm);
-
 	fclose(code);
 
-	printf("%s\n", comm->fct);
-	printf("%d\n", comm->r1);
-	printf("%d\n", comm->flag);
-	printf("%ld\n", comm->o);
-	printf("%d\n", comm->r2);
+	printf("Avant ini\n");
+	printf("%i\n", regs[0]);
+	printf("%i\n", regs[1]);
+	printf("%i\n\n", regs[2]);
+
+	regs[1] = 21;
+	regs[2] = 7;
+
+	printf("Après ini\n");
+	printf("%i\n", regs[0]);
+	printf("%i\n", regs[1]);
+	printf("%i\n\n", regs[2]);
+
+	inst = "00000000010000000000000001000000";
+	inter(inst, comm);
+	printf("Contenu de la commande.\n");
+	print_cmd(*comm);
+	trait(*comm, regs, pc);
+
+	printf("Après exécution\n");
+	printf("%i\n", regs[0]);
+	printf("%i\n", regs[1]);
+	printf("%i\n\n", regs[2]);
 
 	return 0;
 }
