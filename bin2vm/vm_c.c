@@ -35,7 +35,7 @@ char * extstr (char * str, int a, int b) {
 		printf("Erreur de bornes.\n");
 		exit(0);
 	}
-	
+
 	char * rslt = malloc(sizeof(char) * (b-a+1));
 	strcpy(rslt, str);
 	rslt[b] = '\0';
@@ -149,14 +149,16 @@ void trait (struct cmd comm, int * regs, int * pc) {
 			break;
 		case 17: // scall
 			if (comm.flag == 0) {
+				printf(">>> ");
 				scanf("%i", regs+1);
 			} else {
-				printf("%i", *(regs+1));
+				printf("%i\n", *(regs+1));
 			}
 			(*pc)++;
 			break;
 		case 18: // stop
 			printf("FIN DE L'EXÉCUTION\n");
+			*pc = -1;
 			break;
 		default:
 			printf("ERREUR À L'INSTRUCTION %i\n.", *pc);
@@ -167,20 +169,22 @@ void trait (struct cmd comm, int * regs, int * pc) {
 int main (int argc, char * argv[]) {
 
 	int regs[NUM_REGS]; // registre
-	int * pc;			// program counter
-
+	int * pc = malloc(sizeof(int));			// program counter
 	char * inst = malloc(32 * sizeof(char));
 	struct cmd * comm = malloc(sizeof(struct cmd));
 	FILE * code = NULL;
 
+	*pc = 0;
 	code = fopen("./../data/bin.txt", "r");
+	while (*pc >= 0) {
+		fscanf(code, "%32s", inst);
+		inter(inst, comm);
+		trait(*comm, regs, pc);
+	}
+
 	fclose(code);
 
-	printf("Avant ini\n");
-	printf("%i\n", regs[0]);
-	printf("%i\n", regs[1]);
-	printf("%i\n\n", regs[2]);
-
+	/* Test manuel de trait -- satisfaisant
 	regs[1] = 21;
 	regs[2] = 7;
 
@@ -189,7 +193,7 @@ int main (int argc, char * argv[]) {
 	printf("%i\n", regs[1]);
 	printf("%i\n\n", regs[2]);
 
-	inst = "00000000010000000000000001000000";
+	inst = "00000000011000000000000001000000";
 	inter(inst, comm);
 	printf("Contenu de la commande.\n");
 	print_cmd(*comm);
@@ -199,6 +203,7 @@ int main (int argc, char * argv[]) {
 	printf("%i\n", regs[0]);
 	printf("%i\n", regs[1]);
 	printf("%i\n\n", regs[2]);
+	*/
 
 	return 0;
 }
