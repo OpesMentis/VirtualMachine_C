@@ -1,16 +1,22 @@
 /*
-	Programme n°2, interpretation des instructions en binaire dans le fichier 'bin.txt'.
+	Programme n°2, interpretation des instructions binaires dans le fichier 'bin.txt'.
 	Encodage : 5 bits  - fonction
 			   5 bits  - parametre registre 1
 			   1 bit   - flag (1 : reg ; 0 : imm)
 			   16 bits - parametre o
 			   5 bits  - parametre registre 2
 
-	jmp		 : 5 bits  - fonction (01111)
-			   5 bits  - '00000'
-			   1 bits  - flag
+	jmp et	 : 5 bits  - fonction
+	autres du  5 bits  - '00000'
+	même type  1 bits  - flag
 			   16 bits - parametre o
 			   5 bits  - parametre registre
+
+	scall    : 5 bits  - fonction (10001)
+			   5 bits  - non lus
+			   1 bit   - parametre (0, lecture clavier ; 1, affichage ; reg. 31)
+			   21 bits - non lus
+
 
 
 	Auteur : Antoine Planchot
@@ -57,7 +63,7 @@ int bin2dec (char * bin) {
 	return tot;
 }
 
-// interprète une ligne d'instruction en binaire
+// convertit une instruction binaire dans une structure "cmd"
 void inter (char * inst, struct cmd * comm) {
 	strcpy(comm->fct, extstr(inst, 0, 5));
 	comm->r1 = bin2dec(extstr(inst, 5, 10));
@@ -66,48 +72,99 @@ void inter (char * inst, struct cmd * comm) {
 	comm->r2 = bin2dec(extstr(inst, 27, 32));
 }
 
-void trait (struct cmd comm, int * regs) {
-	long o;
-	if (comm->flag == 0) {
-		o = comm->o;
-	} else {
-		o = regs[comm->o];
-	}
+// exécute une commande, pointeurs vers registre et pc donnés
+void trait (struct cmd comm, int * regs, int * pc) {
+	long o = (comm.flag == 1)? regs[comm.o]: comm.o;
 
-	switch (comm->fct) {
-		case "00000": // add
-			regs[comm->r2] = regs[comm->r1] + o;
+	switch (bin2dec(comm.fct)) {
+		case 0: // add
+			regs[comm.r2] = regs[comm.r1] + o;
+			(*pc)++;
 			break;
-		case "00001": // sub
-			regs[comm->r2] = regs[comm->r1] - o;
+		case 1: // sub
+			regs[comm.r2] = regs[comm.r1] - o;
+			(*pc)++;
 			break;
-		case "00010": // mult
-			regs[comm->r2] = regs[comm->r1] * o;
+		case 2: // mult
+			regs[comm.r2] = regs[comm.r1] * o;
+			(*pc)++;
 			break;
-		case "00011": // div
-			regs[comm->r2] = regs[comm->r1] / o;
+		case 3: // div
+			regs[comm.r2] = regs[comm.r1] / o;
+			(*pc)++;
 			break;
-		case "00100": // and
-			regs[comm->r2] = regs[comm->r1] & o;
+		case 4: // and
+			regs[comm.r2] = regs[comm.r1] & o;
+			(*pc)++;
 			break;
-		case "00101": // or
-			regs[comm->r2] = regs[comm->r1] | o;
+		case 5: // or
+			regs[comm.r2] = regs[comm.r1] | o;
+			(*pc)++;
 			break;
-		case "00110": // xor
-			regs[comm->r2] = regs[comm->r1] ^ o;
+		case 6: // xor
+			regs[comm.r2] = regs[comm.r1] ^ o;
+			(*pc)++;
 			break;
-		case "00111": // shl
-			regs[comm->r2] = regs[comm->r1] << o;
+		case 7: // shl
+			regs[comm.r2] = regs[comm.r1] << o;
+			(*pc)++;
 			break;
-		case "01000": // shr
-			regs[comm->r2] = regs[comm->r1] >> o;
+		case 8: // shr
+			regs[comm.r2] = regs[comm.r1] >> o;
+			(*pc)++;
+			break;
+		case 9: // slt
+			regs[comm.r2] = (comm.r1 < o)? 1: 0;
+			(*pc)++;
+			break;
+		case 10: // sle
+			regs[comm.r2] = (comm.r1 <= o)? 1: 0;
+			(*pc)++;
+			break;
+		case 11: // seq
+			regs[comm.r2] = (comm.r1 == o)? 1: 0;
+			(*pc)++;
+			break;
+		case 12: // load
+			regs[comm.r2] = regs[comm.r1 + o];
+			(*pc)++;
+			break;
+		case 13: // store
+			regs[comm.r1 + o] = regs[comm.r2];
+			(*pc)++;
+			break;
+		case 14: // jmp
+			regs[comm.r2] = (*pc)+1;
+			*pc = o;
+			break;
+		case 15: // braz
+			*pc = (comm.r1 == 0)? o: (*pc)+1;
+			break;
+		case 16: // branz
+			*pc = (comm.r1 != 0)? o: (*pc)+1;
+			break;
+		case 17: // scall
+			if (comm.flag == 0) {
+				scanf("%i", regs+1);
+			} else {
+				printf("%i", *(regs+1));
+			}
+			(*pc)++;
+			break;
+		case 18: // stop
+			printf("FIN DE L'EXÉCUTION");
+			break;
+		default:
+			printf("ERREUR À L'INSTRUCTION %i", *pc);
 			break;
 	}
 }
 
 int main (int argc, char * argv[]) {
 
-	int regs[NUM_REGS];
+	int regs[NUM_REGS]; // registre
+	int * pc;			// program counter
+
 	char * inst = malloc(32 * sizeof(char));
 	struct cmd * comm = malloc(sizeof(struct cmd));
 	FILE * code = NULL;
