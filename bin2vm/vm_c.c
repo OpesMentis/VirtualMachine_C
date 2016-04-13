@@ -7,17 +7,21 @@
 			   5 bits  - parametre registre 2
 
 	jmp et	 : 5 bits  - fonction
-	autres du  5 bits  - '00000'
+	autres du  5 bits  - non lus
 	même type  1 bits  - flag
 			   16 bits - parametre o
 			   5 bits  - parametre registre
+
+	braz et  : 5 bits  - fonction
+	branz	   5 bits  - parametre registre
+			   1 bit   - flag
+			   16 bits - parametre o
+			   5 bits  - non lus
 
 	scall    : 5 bits  - fonction (10001)
 			   5 bits  - non lus
 			   1 bit   - parametre (0, lecture clavier ; 1, affichage ; reg. 31)
 			   21 bits - non lus
-
-
 
 	Auteur : Antoine Planchot
 */
