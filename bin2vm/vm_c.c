@@ -146,10 +146,10 @@ void trait (struct cmd comm, int * regs, int * pc) {
 			*pc = o;
 			break;
 		case 15: // braz
-			*pc = (comm.r1 == 0)? o: (*pc)+1;
+			*pc = (regs[comm.r1] == 0)? o: (*pc)+1;
 			break;
 		case 16: // branz
-			*pc = (comm.r1 != 0)? o: (*pc)+1;
+			*pc = (regs[comm.r1] != 0)? o: (*pc)+1;
 			break;
 		case 17: // scall
 			if (comm.flag == 0) {
@@ -180,6 +180,7 @@ int main (int argc, char * argv[]) {
 
 	*pc = 0;
 	code = fopen("./../data/bin.txt", "r");
+
 	while (*pc >= 0) {
 		fscanf(code, "%32s", inst);
 		inter(inst, comm);
