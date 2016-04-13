@@ -180,6 +180,7 @@ int main (int argc, char * argv[]) {
 		fscanf(code, "%32s", inst);
 		inter(inst, comm);
 		trait(*comm, regs, pc);
+		fseek(code, 33 * (*pc), SEEK_SET);
 	}
 
 	fclose(code);
