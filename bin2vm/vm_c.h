@@ -13,6 +13,6 @@ char * extstr (char * str, int a, int b);
 int bin2dec (char * bin);
 void inter (char * inst, struct cmd * comm);
 void print_cmd(struct cmd comm);
-void trait (struct cmd comm, int * regs, int * flux);
+void trait (struct cmd comm, int * regs, int * data, int * pc);
 
 #endif
