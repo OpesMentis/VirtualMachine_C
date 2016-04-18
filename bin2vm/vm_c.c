@@ -82,7 +82,7 @@ void print_cmd(struct cmd comm) {
 }
 
 // exécute une commande, pointeurs vers registre et pc donnés
-void trait (struct cmd comm, int * regs, int * pc) {
+void trait (struct cmd comm, int * regs, int * data, int * pc) {
 	long o = (comm.flag == 1)? regs[comm.o]: comm.o;
 
 	switch (bin2dec(comm.fct)) {
@@ -189,7 +189,7 @@ int main (int argc, char * argv[]) {
 	while (*pc >= 0) {
 		fscanf(code, "%32s", inst);
 		inter(inst, comm);
-		trait(*comm, regs, pc);
+		trait(*comm, regs, data, pc);
 		fseek(code, 33 * (*pc), SEEK_SET);
 	}
 
