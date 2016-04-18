@@ -2,26 +2,26 @@
 	Programme n°2, interpretation des instructions binaires dans le fichier 'bin.txt'.
 	Encodage : 5 bits  - fonction
 			   5 bits  - parametre registre 1
-			   1 bit   - flag (1 : reg ; 0 : imm)
-			   16 bits - parametre o
-			   5 bits  - parametre registre 2
+		   	   1 bit   - flag (1 : reg ; 0 : imm)
+		   	   16 bits - parametre o
+		   	   5 bits  - parametre registre 2
 
 	jmp et	 : 5 bits  - fonction
 	autres du  5 bits  - non lus
 	même type  1 bits  - flag
-			   16 bits - parametre o
-			   5 bits  - parametre registre
+		   	   16 bits - parametre o
+		   	   5 bits  - parametre registre
 
 	braz et  : 5 bits  - fonction
 	branz	   5 bits  - parametre registre
-			   1 bit   - flag
-			   16 bits - parametre o
-			   5 bits  - non lus
+		   	   1 bit   - flag
+		   	   16 bits - parametre o
+		   	   5 bits  - non lus
 
 	scall    : 5 bits  - fonction (10001)
-			   5 bits  - non lus
-			   1 bit   - parametre (0, lecture clavier ; 1, affichage ; reg. 31)
-			   21 bits - non lus
+		   	   5 bits  - non lus
+		   	   1 bit   - parametre (0, lecture clavier ; 1, affichage ; reg. 31)
+		   	   21 bits - non lus
 
 	Auteur : Antoine Planchot
 */
@@ -32,6 +32,7 @@
 #include "vm_c.h"
 
 #define NUM_REGS 32
+#define NUM_DATA 500
 
 // extraire proprement des morceaux de chaine de caractere (Python - str[a:b])
 char * extstr (char * str, int a, int b) {
@@ -134,11 +135,11 @@ void trait (struct cmd comm, int * regs, int * pc) {
 			(*pc)++;
 			break;
 		case 12: // load
-			regs[comm.r2] = regs[comm.r1 + o];
+			regs[comm.r2] = data[comm.r1 + o];
 			(*pc)++;
 			break;
 		case 13: // store
-			regs[comm.r1 + o] = regs[comm.r2];
+			data[comm.r1 + o] = regs[comm.r2];
 			(*pc)++;
 			break;
 		case 14: // jmp
@@ -173,6 +174,10 @@ void trait (struct cmd comm, int * regs, int * pc) {
 int main (int argc, char * argv[]) {
 
 	int regs[NUM_REGS]; // registre
+	int data[NUM_DATA]; // mémoire de données
+
+	regs[30] = NUM_DATA;
+
 	int * pc = malloc(sizeof(int));			// program counter
 	char * inst = malloc(32 * sizeof(char));
 	struct cmd * comm = malloc(sizeof(struct cmd));
