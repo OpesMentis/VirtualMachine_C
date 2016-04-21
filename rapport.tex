@@ -26,7 +26,9 @@
 	Non scholae sed vitae discimus.
 
 	\part*{De l'assembleur vers le binaire}
-	Ave Maria gratia plena.
+	Outre les problèmes inhérents au langage C, nous n'avons n'a pas rencontré de problème majeur, si ce n'est qu'il a fallu du temps à l'auteur avant de créer un code propre s'adaptant à toutes les situations possibles. 
+En effet, lorsque l'on lit le code assembleur , suivant la commande, il n'y aura pas le même nombre d'argument et ces arguments ne seront pas rencontrés au même endroit. Dés lors une approche générique semble difficile dans la traduction en binaire des lignes de commandes. Néanmoins on arrive à la fin à traduire chaque commande on agençant différemment des fonctions de haut niveau (add_register, add_flag_argO) rajoutant les bits de registre, de flag et du paramètre o. On reconnaîtra ainsi 5 grands type de commande se traduisant de la même façon : add like, jump, braz like, scall like et stop.
+Lorsque les bits seront non lu, on les mets à un. Sauf lorsque l'on complète si besoin la fin de l'instruction par des 0.
 
 	\part*{Du binaire vers la machine virtuelle}
 	Beati pauperes spiritu.
