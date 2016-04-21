@@ -139,11 +139,11 @@ void trait (struct cmd comm, int * regs, int * data, int * pc) {
 			(*pc)++;
 			break;
 		case 13: // load
-			regs[comm.r2] = regs[comm.r1 + o];
+			regs[comm.r2] = data[comm.r1 + o];
 			(*pc)++;
 			break;
 		case 14: // store
-			regs[comm.r1 + o] = regs[comm.r2];
+			data[comm.r1 + o] = regs[comm.r2];
 			(*pc)++;
 			break;
 		case 15: // jmp
@@ -193,6 +193,7 @@ int main (int argc, char * argv[]) {
 	while (*pc >= 0) {
 		fscanf(code, "%32s", inst);
 		inter(inst, comm);
+		//print_cmd(*comm);
 		trait(*comm, regs, data, pc);
 		fseek(code, 33 * (*pc), SEEK_SET);
 	}
