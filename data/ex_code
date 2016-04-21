@@ -4,3 +4,4 @@ mult 1, 2, 1
 sub 2, imm 1, 2
 branz 2, imm 2
 scall 1
+stop
