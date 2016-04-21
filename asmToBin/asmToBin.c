@@ -1,4 +1,3 @@
-
 #include "asmToBin.h"
 #include "util.h"
 
@@ -94,13 +93,41 @@ int fill_string(char* name_file, char* string){
    }
       	     		
 void convert_add( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
-// On rajoute un registre
- 	  		word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-    	  	if(convert_register(word_asm, word_bin)==0){
-		strcat(line_bin, word_bin);
-		}
-    	  	// on rajoute le flag
+
+    	  	add_registre(word_asm, line_asm, line_bin, word_bin);
+    	  	add_flag_argO( word_asm, line_asm, line_bin, word_bin);
+    	  	add_registre(word_asm, line_asm, line_bin, word_bin);
+
+}
+void convert_jump( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
+
+// on rajoute 5 bits  
+    	  	strcpy(word_bin,"11111");
+    	  	strcat(line_bin, word_bin); 
+    	  	add_flag_argO(word_asm, line_asm, line_bin, word_bin);
+    	  	add_registre(word_asm, line_asm, line_bin, word_bin);
+
+}
+
+void convert_braz( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
+		  add_registre(word_asm, line_asm, line_bin, word_bin);
+    	  add_flag_argO(word_asm, line_asm, line_bin, word_bin);
+
+}
+
+
+void convert_scall( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
+// on rajoute 5 bits  
+    	  	strcpy(word_bin,"11111");
+    	  	strcat(line_bin, word_bin); 
+    	  add_registre(word_asm, line_asm, line_bin, word_bin);
+
+
+}
+
+
+void add_flag_argO(char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
+// on rajoute le flag
     	  	word_asm = strtok (NULL," ,");
 			memset(word_bin, 0, sizeof word_bin);
     	  	if(convert_flag(word_asm, word_bin)==0){
@@ -118,92 +145,17 @@ void convert_add( char* word_asm,  char* line_asm, char* line_bin, char* word_bi
     	  	convert_paramO(word_asm, word_bin);
 			strcat(line_bin, word_bin); 
     	  	}
-    	  	// on rajoute le registre
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-    	  	if(convert_register(word_asm, word_bin)==0){
-		strcat(line_bin, word_bin);
-		}
 }
 
-void convert_jump( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
-
-// on rajoute 5 bits  
-    	  	strcpy(word_bin,"11111");
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le flag
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-    	  	if(convert_flag(word_asm, word_bin)==0){
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le parametre O
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-			convert_paramO(word_asm, word_bin);
-			strcat(line_bin, word_bin); 
-    	  	}
-    	  	else{
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le parametre O
-			memset(word_bin, 0, sizeof word_bin);
-    	  	convert_paramO(word_asm, word_bin);
-			strcat(line_bin, word_bin); 
-    	  	}
-    	  	// on rajoute le registre
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-    	  	if(convert_register(word_asm, word_bin)==0){
-		strcat(line_bin, word_bin);
-		}
-
-}
-
-void convert_braz( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
+void add_registre(char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
 // On rajoute un registre
  	  		word_asm = strtok (NULL," ,");
 			memset(word_bin, 0, sizeof word_bin);
     	  	if(convert_register(word_asm, word_bin)==0){
 		strcat(line_bin, word_bin);
 		}
-    	  	// on rajoute le flag
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-    	  	if(convert_flag(word_asm, word_bin)==0){
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le parametre O
-    	  	word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-			convert_paramO(word_asm, word_bin);
-			strcat(line_bin, word_bin); 
-    	  	}
-    	  	else{
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le parametre O
-			memset(word_bin, 0, sizeof word_bin);
-    	  	convert_paramO(word_asm, word_bin);
-			strcat(line_bin, word_bin); 
-    	  	}
 
 }
-
-
-void convert_scall( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
-// on rajoute 5 bits  
-    	  	strcpy(word_bin,"11111");
-    	  	strcat(line_bin, word_bin); 
-    	  	// on rajoute le parametre
-    	  word_asm = strtok (NULL," ,");
-			memset(word_bin, 0, sizeof word_bin);
-			 convert_param1bit(word_asm, word_bin);
-			 strcat(line_bin, word_bin); 
-
-
-}
-
-
-
-
-
 
 
 
