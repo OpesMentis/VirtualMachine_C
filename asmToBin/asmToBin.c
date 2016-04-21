@@ -119,9 +119,12 @@ void convert_braz( char* word_asm,  char* line_asm, char* line_bin, char* word_b
 void convert_scall( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
 // on rajoute 5 bits  
     	  	strcpy(word_bin,"11111");
+    	  	// on rajoute le parametre de scall 
     	  	strcat(line_bin, word_bin); 
-    	  add_registre(word_asm, line_asm, line_bin, word_bin);
-
+    	  	word_asm = strtok (NULL," ,");
+			memset(word_bin, 0, sizeof word_bin);
+    	  convert_param1bit(word_asm, word_bin);
+			strcat(line_bin, word_bin); 
 
 }
 
