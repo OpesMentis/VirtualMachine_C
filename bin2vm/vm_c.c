@@ -18,7 +18,7 @@
 			   16 bits - parametre o
 			   5 bits  - non lus
 
-	scall    : 5 bits  - fonction (10001)
+	scall    : 5 bits  - fonction (10010)
 			   5 bits  - non lus
 			   1 bit   - parametre (0, lecture clavier ; 1, affichage ; reg. 31)
 			   21 bits - non lus
@@ -85,73 +85,77 @@ void trait (struct cmd comm, int * regs, int * pc) {
 	long o = (comm.flag == 1)? regs[comm.o]: comm.o;
 
 	switch (bin2dec(comm.fct)) {
-		case 0: // add
+		case 0: // nop
+			// ne rien faire
+			(*pc)++;
+			break;
+		case 1: // add
 			regs[comm.r2] = regs[comm.r1] + o;
 			(*pc)++;
 			break;
-		case 1: // sub
+		case 2: // sub
 			regs[comm.r2] = regs[comm.r1] - o;
 			(*pc)++;
 			break;
-		case 2: // mult
+		case 3: // mult
 			regs[comm.r2] = regs[comm.r1] * o;
 			(*pc)++;
 			break;
-		case 3: // div
+		case 4: // div
 			regs[comm.r2] = regs[comm.r1] / o;
 			(*pc)++;
 			break;
-		case 4: // and
+		case 5: // and
 			regs[comm.r2] = regs[comm.r1] & o;
 			(*pc)++;
 			break;
-		case 5: // or
+		case 6: // or
 			regs[comm.r2] = regs[comm.r1] | o;
 			(*pc)++;
 			break;
-		case 6: // xor
+		case 7: // xor
 			regs[comm.r2] = regs[comm.r1] ^ o;
 			(*pc)++;
 			break;
-		case 7: // shl
+		case 8: // shl
 			regs[comm.r2] = regs[comm.r1] << o;
 			(*pc)++;
 			break;
-		case 8: // shr
+		case 9: // shr
 			regs[comm.r2] = regs[comm.r1] >> o;
 			(*pc)++;
 			break;
-		case 9: // slt
+		case 10: // slt
 			regs[comm.r2] = (comm.r1 < o)? 1: 0;
 			(*pc)++;
 			break;
-		case 10: // sle
+		case 11: // sle
 			regs[comm.r2] = (comm.r1 <= o)? 1: 0;
 			(*pc)++;
 			break;
-		case 11: // seq
+		case 12: // seq
 			regs[comm.r2] = (comm.r1 == o)? 1: 0;
 			(*pc)++;
 			break;
-		case 12: // load
+		case 13: // load
 			regs[comm.r2] = regs[comm.r1 + o];
 			(*pc)++;
 			break;
-		case 13: // store
+		case 14: // store
 			regs[comm.r1 + o] = regs[comm.r2];
 			(*pc)++;
 			break;
-		case 14: // jmp
+		case 15: // jmp
 			regs[comm.r2] = (*pc)+1;
 			*pc = o;
 			break;
-		case 15: // braz
+		case 16: // braz
 			*pc = (regs[comm.r1] == 0)? o: (*pc)+1;
 			break;
-		case 16: // branz
+		case 17: // branz
 			*pc = (regs[comm.r1] != 0)? o: (*pc)+1;
 			break;
-		case 17: // scall
+		case 18: // scall
 			if (comm.flag == 0) {
 				printf(">>> ");
 				scanf("%i", regs+1);
@@ -160,7 +164,7 @@ void trait (struct cmd comm, int * regs, int * pc) {
 			}
 			(*pc)++;
 			break;
-		case 18: // stop
+		case 19: // stop
 			printf("FIN DE L'EXÉCUTION\n");
 			*pc = -1;
 			break;
