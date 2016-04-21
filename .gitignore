@@ -1,3 +1,8 @@
 *.exe
 *.o
 *~
+*.aux
+*.log
+*.pdf
+data/bin.txt
+data/ex_code

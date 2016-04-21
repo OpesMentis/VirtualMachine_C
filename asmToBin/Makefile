@@ -1,4 +1,4 @@
-all: asmToBin
+all: asmToBin.exe
 	
 asmToBin.o: asmToBin.c asmToBin.h util.o
 	gcc -w -Wall -o asmToBin.o -c asmToBin.c -lm -lc -std=c99
@@ -8,7 +8,6 @@ util.o: util.c util.h
 
 asmToBin: asmToBin.o util.o
 	gcc -w -Wall -o asmToBin.exe asmToBin.o util.o -lm -lc -std=c99
-
 
 
 
