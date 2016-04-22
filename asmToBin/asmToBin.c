@@ -117,7 +117,6 @@ void convert_braz( char* word_asm,  char* line_asm, char* line_bin, char* word_b
 
 
 void convert_scall( char* word_asm,  char* line_asm, char* line_bin, char* word_bin){
-<<<<<<< HEAD
 // on rajoute 5 bits  
     	  	strcpy(word_bin,"11111");
     	  	// on rajoute le parametre de scall 
